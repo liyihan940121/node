@@ -1,4 +1,4 @@
-const {add, mul} = require('./a')
+const { add, mul } = require('./a')
 const _ = require('lodash')
 const sum = add(10, 20)
 const result = mul(100, 200)
