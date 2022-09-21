@@ -1,5 +1,5 @@
 const http = require('http')
-// const qs = require('qs')
+const qs = require('qs')
 
 // get
 // const server = http.createServer((req, res) => {
@@ -17,19 +17,57 @@ const http = require('http')
 // })
 
 //post
+// const server = http.createServer((req, res) => {
+//   if(req.method === 'POST') {
+//     // req 数据格式
+//     console.info('req content-type:', req.headers)
+//     console.info('req content-type:', req.headers['content-type'])
+//     // 接收数据
+//     let postData = ''
+//     req.on('data', chunk => {
+//       postData += chunk.toString()
+//     })
+//     req.on('end', () => {
+//       console.info('postData:', postData)
+//       res.end('hello world !')
+//     })
+//   }
+// })
+
+//综合
   const server = http.createServer((req, res) => {
-    if(req.method === 'POST') {
-      // req 数据格式
-      console.info('req content-type:', req.headers)
-      console.info('req content-type:', req.headers['content-type'])
-      // 接收数据
+    const method = req.method
+    const url = req.url
+    const path = url.split('?')[0]
+    const query = qs.parse(url.split('?')[1])
+
+    //设置返回格式为 JSON
+    res.setHeader('Content-type', 'application/json')
+
+    //返回的数据
+    const resData = {
+      method,
+      url,
+      path,
+      query
+    }
+
+    if(method === 'GET') {
+      res.end(
+        JSON.stringify(resData)
+      )
+    }
+    if(method === 'POST') {
       let postData = ''
       req.on('data', chunk => {
         postData += chunk.toString()
       })
       req.on('end', () => {
-        console.info('postData:', postData)
-        res.end('hello world !')
+        resData.postData = postData
+        //返回
+        res.end(
+          JSON.stringify(resData)
+        )
       })
     }
   })
